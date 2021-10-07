@@ -10,9 +10,6 @@ import com.example.viewmodeltesting.network.ApiInterface
 import com.example.viewmodeltesting.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivityViewModel(context: Application) : AndroidViewModel(context) {
 
@@ -44,6 +41,14 @@ class MainActivityViewModel(context: Application) : AndroidViewModel(context) {
             .getRandomUser()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { response -> _message.value = response.results[0]["name"]?.get("first")}
+            .subscribe (this::showNewValue) { throwable -> showError(throwable) }
+    }
+
+    private fun showNewValue(response: RandomUserResponse) {
+        _message.value = response.results[0]["name"]?.get("first")
+    }
+
+    private fun showError(throwable: Throwable) {
+        _message.value = throwable.message ?: "error"
     }
 }
