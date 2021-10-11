@@ -30,4 +30,14 @@ class MainActivity : AppCompatActivity() {
             mainActivityViewModel.uploadRandomUser()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        mainActivityViewModel.getCurrentMessage()
+    }
+
+    override fun onDestroy() {
+        mainActivityViewModel.saveCurrentMessage(binding.tvTextView.text.toString())
+        super.onDestroy()
+    }
 }

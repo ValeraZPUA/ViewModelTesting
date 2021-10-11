@@ -1,18 +1,16 @@
 package com.example.viewmodeltesting.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.example.viewmodeltesting.model.RandomUserResponse
 import com.example.viewmodeltesting.network.ApiInterface
 import com.example.viewmodeltesting.network.RetrofitService
+import com.example.viewmodeltesting.utils.MESSAGE
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
-class MainActivityViewModel(context: Application) : AndroidViewModel(context) {
+class MainActivityViewModel(state: SavedStateHandle) : ViewModel() {
 
+    private val savedStateHandle = state
     private var apiInterface: ApiInterface = RetrofitService.getInterface()
 
     private val _message = MutableLiveData<String>()
@@ -22,6 +20,16 @@ class MainActivityViewModel(context: Application) : AndroidViewModel(context) {
     private val _isFetching = MutableLiveData<Boolean>()
     val isFetching: LiveData<Boolean>
         get() = _isFetching
+
+    //@OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun saveCurrentMessage(message: String) {
+        savedStateHandle[MESSAGE] =  message
+    }
+
+    //@OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun getCurrentMessage() {
+        updateTextView(savedStateHandle.get(MESSAGE) ?: "")
+    }
 
     fun updateTextView(newMessage: String) {
         _message.value = newMessage
