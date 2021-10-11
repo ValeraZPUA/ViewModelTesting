@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        lifecycle.addObserver(mainActivityViewModel)
 
         binding.viewModel = mainActivityViewModel
         binding.lifecycleOwner = this
@@ -29,15 +30,5 @@ class MainActivity : AppCompatActivity() {
         binding.btnGetRandomUser.setOnClickListener {
             mainActivityViewModel.uploadRandomUser()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mainActivityViewModel.getCurrentMessage()
-    }
-
-    override fun onDestroy() {
-        mainActivityViewModel.saveCurrentMessage(binding.tvTextView.text.toString())
-        super.onDestroy()
     }
 }
